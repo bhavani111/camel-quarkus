@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus-build-parent</artifactId>
-        <version>3.35.0-SNAPSHOT</version>
+        <version>3.36.0-SNAPSHOT</version>
         <relativePath>../poms/build-parent/pom.xml</relativePath>
     </parent>
 
@@ -57,15 +57,12 @@
         <module>drill</module>
         <module>dsl-modeline</module>
         <module>ehcache</module>
-        <module>elasticsearch</module>
         <module>fastjson</module>
         <module>flink</module>
         <module>google-functions</module>
         <module>guava-eventbus</module>
         <module>huaweicloud-smn</module>
         <module>ibm-secrets-manager</module>
-        <module>ibm-watson-discovery</module>
-        <module>ibm-watson-language</module>
         <module>iec60870</module>
         <module>ignite</module>
         <module>irc</module>
@@ -144,10 +141,25 @@
                                 <phase>process-classes</phase>
                                 <configuration>
                                     <componentLinkOverrides>
+                                        <!-- TODO: Remove for Camel > 4.20.0 -->
+                                        <aws-xray>
+                                            <name>camel-aws-xray</name>
+                                            <xrefPrefix>remove</xrefPrefix>
+                                        </aws-xray>
                                         <console>
                                             <name>camel-console</name>
                                             <xrefPrefix>xref:manual::</xrefPrefix>
                                         </console>
+                                        <!-- TODO: Remove for Camel > 4.20.0 -->
+                                        <stomp>
+                                            <name>camel-stomp</name>
+                                            <xrefPrefix>remove</xrefPrefix>
+                                        </stomp>
+                                        <!-- TODO: Remove for Camel > 4.21.0 -->
+                                        <guava-eventbus>
+                                            <name>camel-guava-eventbus</name>
+                                            <xrefPrefix>remove</xrefPrefix>
+                                        </guava-eventbus>
                                     </componentLinkOverrides>
                                 </configuration>
                             </execution>

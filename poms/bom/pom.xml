@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus-poms</artifactId>
-        <version>3.35.0-SNAPSHOT</version>
+        <version>3.36.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>camel-quarkus-bom</artifactId>
@@ -31,7 +31,7 @@
     <properties>
         <!-- This property is kept in sync with project.version by the release plugin -->
         <!-- Do not change to project.version because otherwise the end user apps having our BOM as parent (rather than importing it) will stop working -->
-        <camel-quarkus.version>3.35.0-SNAPSHOT</camel-quarkus.version>
+        <camel-quarkus.version>3.36.0-SNAPSHOT</camel-quarkus.version>
         <allow-findbugs>true</allow-findbugs>
     </properties>
     <dependencyManagement>
@@ -980,6 +980,10 @@
                     <exclusion>
                         <artifactId>infinispan-core</artifactId>
                         <groupId>org.infinispan</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -6798,6 +6802,16 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-tls-registry</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-tls-registry-deployment</artifactId>
+                <version>${camel-quarkus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
                 <artifactId>camel-quarkus-twilio</artifactId>
                 <version>${camel-quarkus.version}</version>
             </dependency>
@@ -7348,6 +7362,10 @@
                         <artifactId>annotations</artifactId>
                     </exclusion>
                     <exclusion>
+                        <groupId>com.google.auto.value</groupId>
+                        <artifactId>auto-value-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>com.google.code.findbugs</groupId>
                         <artifactId>jsr305</artifactId>
                     </exclusion>
@@ -7470,6 +7488,11 @@
                 <groupId>com.google.re2j</groupId>
                 <artifactId>re2j</artifactId>
                 <version>${re2j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.cloud</groupId>
+                <artifactId>sdk-core</artifactId>
+                <version>${ibm.java-sdk-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.icu</groupId>
@@ -7995,6 +8018,21 @@
                 <groupId>org.apache.jackrabbit</groupId>
                 <artifactId>oak-jackrabbit-api</artifactId>
                 <version>${oak-jackrabbit-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-api</artifactId>
+                <version>${kafka.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>javax.ws.rs-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.lz4</groupId>
+                        <artifactId>lz4-java</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>

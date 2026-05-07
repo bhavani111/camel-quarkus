@@ -16,6 +16,7 @@
 #
 
 name: Camel Quarkus LTS CI
+run-name: Camel Quarkus LTS CI - ${{ github.event.inputs.branch }}.x
 
 on:
   workflow_dispatch:
@@ -24,6 +25,7 @@ on:
         type: choice
         description: "The Quarkus maintenance branch to test"
         options:
+          - "3.33"
           - "3.27"
           - "3.20"
         required: true

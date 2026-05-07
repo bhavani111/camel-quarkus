@@ -26,7 +26,6 @@ import io.restassured.RestAssured;
 import org.apache.camel.quarkus.test.support.debezium.AbstractDebeziumTest;
 import org.apache.camel.quarkus.test.support.debezium.Type;
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -47,8 +46,7 @@ class DebeziumPostgresTest extends AbstractDebeziumTest {
     }
 
     @BeforeAll
-    public static void setUp() throws SQLException {
-        Config config = ConfigProvider.getConfig();
+    public static void setUp(Config config) throws SQLException {
         final String jdbcUrl = config.getValue(Type.postgres.getPropertyJdbc(), String.class);
         connection = DriverManager.getConnection(jdbcUrl);
     }
@@ -60,7 +58,8 @@ class DebeziumPostgresTest extends AbstractDebeziumTest {
         RestAssured.get(Type.postgres.getComponent() + "/getAdditionalProperties")
                 .then()
                 .statusCode(200)
-                .body("'database.connectionTimeZone'", is("CET"));
+                .body("'database.connectionTimeZone'", is("CET"))
+                .body("'bootstrap.servers'", is(notNullValue()));
     }
 
     @AfterAll

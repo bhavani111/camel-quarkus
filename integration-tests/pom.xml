@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus</artifactId>
-        <version>3.35.0-SNAPSHOT</version>
+        <version>3.36.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -85,6 +85,7 @@
         <module>disruptor</module>
         <module>docling</module>
         <module>dropbox</module>
+        <module>elasticsearch</module>
         <module>elasticsearch-rest-client</module>
         <module>exec</module>
         <module>fhir</module>
@@ -112,6 +113,8 @@
         <module>hl7</module>
         <module>http-grouped</module>
         <module>ibm-cos</module>
+        <module>ibm-watson-discovery</module>
+        <module>ibm-watson-language</module>
         <module>infinispan</module>
         <module>infinispan-common</module>
         <module>infinispan-quarkus-client</module>
@@ -246,6 +249,7 @@
         <module>telegram</module>
         <module>telemetry-dev</module>
         <module>tika</module>
+        <module>tls-registry</module>
         <module>twilio</module>
         <module>twitter</module>
         <module>univocity-parsers</module>

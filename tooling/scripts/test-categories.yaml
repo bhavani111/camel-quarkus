@@ -16,6 +16,7 @@
 #
 
 # Association of test categories and integration test modules. Used by GitHub workflows. Keep sorted alphabetically.
+# To periodically rebalance groups run: mvn org.apache.camel.quarkus:camel-quarkus-maven-plugin:rebalance-test-groups -Dcq.ciRunId=<GitHub Workflow Run ID> -N
 group-01:
   - caffeine
   - qdrant
@@ -57,18 +58,22 @@ group-02:
 group-03:
   - bean-validator
   - box
+  - elasticsearch
   - elasticsearch-rest-client
   - foundation-grouped
   - freemarker
   - github
   - google
+  - jolokia
   - json-validator
   - mail-microsoft-oauth
   - main
   - main-command-mode
+  - main-unknown-args-fail
   - main-xml-io
   - main-xml-jaxb
   - main-yaml
+  - microprofile-health
   - shiro
   - twitter
   - validator
@@ -148,8 +153,10 @@ group-08:
   - azure-grouped
   - crypto
   - crypto-pgp
+  - joor
   - jq
   - langchain4j-chat
+  - main-unknown-args-ignore
   - master-file
   - pdf
   - pinecone
@@ -185,28 +192,26 @@ group-10:
   - digitalocean
   - docling
   - fop
-  - google-secret-manager
   - groovy
   - ibm-cos
-  - jolokia
-  - joor
-  - langchain4j-tokenizer
+  - ibm-watson-discovery
+  - ibm-watson-language
   - mail
-  - main-unknown-args-fail
-  - main-unknown-args-ignore
-  - microprofile-health
   - platform-http-proxy
   - platform-http-proxy-ssl
   - solr
   - swift
+  - tls-registry
   - weaviate
 group-11:
   - compression-grouped
   - disruptor
   - flatpack
+  - google-secret-manager
   - grok
   - jolt
   - jsonata
+  - langchain4j-tokenizer
   - milo
   - mustache
   - netty
