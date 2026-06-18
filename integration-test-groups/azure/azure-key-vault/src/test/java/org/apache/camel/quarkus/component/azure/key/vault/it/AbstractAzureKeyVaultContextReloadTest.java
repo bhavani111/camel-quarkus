@@ -74,23 +74,25 @@ abstract class AbstractAzureKeyVaultContextReloadTest {
                 throw new RuntimeException(e);
             }
 
-            //force reload by sending a msg
-            try (EventHubProducerClient client = new EventHubClientBuilder()
-                    .connectionString(System.getenv(AZURE_VAULT_EVENT_HUBS_CONNECTION_STRING))
-                    .buildProducerClient()) {
-
-                EventData eventData = new EventData(generateRefreshEvent(secretName).getBytes());
-                List<EventData> finalEventData = new LinkedList<>();
-                finalEventData.add(eventData);
-                LOG.info("Sending refresh event.");
-                client.send(finalEventData);
-            } catch (Exception e) {
-                LOG.info("Failed to send a refresh message", e);
-            }
-
-            //await context reload
+            // Send refresh event once
             Awaitility.await().pollInterval(10, TimeUnit.SECONDS).atMost(5, TimeUnit.MINUTES).untilAsserted(
                     () -> {
+                        try (EventHubProducerClient client = new EventHubClientBuilder()
+                                .connectionString(System.getenv(AZURE_VAULT_EVENT_HUBS_CONNECTION_STRING))
+                                .buildProducerClient()) {
+
+                            EventData eventData = new EventData(generateRefreshEvent(secretName).getBytes());
+                            List<EventData> finalEventData = new LinkedList<>();
+                            finalEventData.add(eventData);
+                            LOG.info("Sending refresh event.");
+                            client.send(finalEventData);
+                        } catch (Exception e) {
+                            LOG.info("Failed to send a refresh message", e);
+                        }
+
+                        /* // Await context reload
+                         Awaitility.await().pollInterval(10, TimeUnit.SECONDS).atMost(5, TimeUnit.MINUTES).untilAsserted(
+                            () -> {*/
                         RestAssured.get("/azure-key-vault/context/reload")
                                 .then()
                                 .statusCode(200)
