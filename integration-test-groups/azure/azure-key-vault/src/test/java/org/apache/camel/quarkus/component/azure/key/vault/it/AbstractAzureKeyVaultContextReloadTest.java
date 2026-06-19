@@ -78,24 +78,24 @@ abstract class AbstractAzureKeyVaultContextReloadTest {
             try (EventHubProducerClient client = new EventHubClientBuilder()
                     .connectionString(System.getenv(AZURE_VAULT_EVENT_HUBS_CONNECTION_STRING))
                     .buildProducerClient()) {
+                Awaitility.await().pollInterval(10, TimeUnit.SECONDS).atMost(5, TimeUnit.MINUTES).untilAsserted(
+                        () -> {
+                            try {
+                                EventData eventData = new EventData(generateRefreshEvent(secretName).getBytes());
+                                List<EventData> finalEventData = new LinkedList<>();
+                                finalEventData.add(eventData);
+                                LOG.info("Sending refresh event.");
+                                client.send(finalEventData);
+                            } catch (Exception e) {
+                                LOG.info("Failed to send a refresh message", e);
+                            }
 
-                EventData eventData = new EventData(generateRefreshEvent(secretName).getBytes());
-                List<EventData> finalEventData = new LinkedList<>();
-                finalEventData.add(eventData);
-                LOG.info("Sending refresh event.");
-                client.send(finalEventData);
-            } catch (Exception e) {
-                LOG.info("Failed to send a refresh message", e);
+                            RestAssured.get("/azure-key-vault/context/reload")
+                                    .then()
+                                    .statusCode(200)
+                                    .body(CoreMatchers.is("true"));
+                        });
             }
-
-            //await context reload
-            Awaitility.await().pollInterval(10, TimeUnit.SECONDS).atMost(5, TimeUnit.MINUTES).untilAsserted(
-                    () -> {
-                        RestAssured.get("/azure-key-vault/context/reload")
-                                .then()
-                                .statusCode(200)
-                                .body(CoreMatchers.is("true"));
-                    });
         } finally {
             // meant to be commented.
             // during development, it may be handy to mark eventhub as completely read. (in case the test is not reading all the messages by itself)
