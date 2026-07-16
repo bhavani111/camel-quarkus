@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-dependencies</artifactId>
-        <version>4.18.3.redhat-00001</version>
+        <version>4.18.1.redhat-00026</version>
     </parent>
 
     <groupId>org.apache.camel.quarkus</groupId>
@@ -40,15 +40,15 @@
 
         <!-- Primary dependencies - maintained manually -->
         <camel.major.minor>4.18</camel.major.minor>
-        <camel-community-version>${camel.major.minor}.3</camel-community-version> <!-- run after each change: cd docs && mvnd validate -->
-        <camel.version>${camel.major.minor}.3.redhat-00001</camel.version>
+        <camel-community-version>${camel.major.minor}.1</camel-community-version> <!-- run after each change: cd docs && mvnd validate -->
+        <camel.version>${camel.major.minor}.1.redhat-00026</camel.version>
         <camel.docs.components.version>${camel.major.minor}.x</camel.docs.components.version><!-- the version in Camel's docs/components/antora.yml -->
         <camel.docs.components.xref>${camel.docs.components.version}@components</camel.docs.components.xref><!-- the version in Camel's docs/components/antora.yml -->
         <camel.docs.branch>camel-${camel.major.minor}.x</camel.docs.branch><!-- The stable camel branch on which our Antora docs depends -->
-        <camel-fusesource.version>4.18.3.redhat-00001</camel-fusesource.version>
+        <camel-fusesource.version>4.18.1.redhat-00022</camel-fusesource.version>
         <sapjco3.version>3.1.12</sapjco3.version>
         <sapidoc.version>3.1.4</sapidoc.version>
-        <camel-kamelets.version>4.18.3.redhat-00001</camel-kamelets.version>
+        <camel-kamelets.version>4.18.1.redhat-00025</camel-kamelets.version>
         <async-profiler.version>2.9</async-profiler.version>
         <camel-quarkus-community.version>3.33.0</camel-quarkus-community.version>
         <cassandra-quarkus.version>1.4.1</cassandra-quarkus.version><!-- This should be in sync with quarkus-platform https://repo1.maven.org/maven2/com/datastax/oss/quarkus/cassandra-quarkus-bom/ -->
@@ -153,7 +153,7 @@
         <kudu.version>${kudu-version}</kudu.version>
         <kotlin.version>2.3.10</kotlin.version><!-- @sync io.quarkus:quarkus-bom:${quarkus.version} dep:org.jetbrains.kotlin:kotlin-stdlib -->
         <kotlinx.version>1.4.0</kotlinx.version><!--Used by com.squareup.wire:wire-compiler referenced from aws2:kinesis -->
-        <kryo.version>2.24.0.redhat-00006</kryo.version><!-- @sync org.apache.flink:flink-core:${flink-version} dep:com.esotericsoftware.kryo:kryo -->
+        <kryo.version>2.24.0</kryo.version><!-- @sync org.apache.flink:flink-core:${flink-version} dep:com.esotericsoftware.kryo:kryo -->
         <langchain4j.version>1.11.0</langchain4j.version><!-- @sync io.quarkiverse.langchain4j:quarkus-langchain4j-parent:${quarkiverse-langchain4j.version} prop:langchain4j.version -->
         <langchain4j-beta.version>1.11.0-beta19</langchain4j-beta.version><!-- @sync dev.langchain4j:langchain4j-bom:${langchain4j.version} prop:langchain4j.beta.version -->
         <libthrift.version>0.23.0</libthrift.version>
@@ -564,9 +564,6 @@
                     <version>${maven-jar-plugin.version}</version>
                 </plugin>
 
-                <!-- license-maven-plugin is not necessarily relevant for user applications.
-                     It is managed here so that we can have its config defined on a single place.
-                     It is executed from profiles only -->
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -730,12 +727,6 @@
                 <groupId>org.l2x6.cq</groupId>
                 <artifactId>cq-maven-plugin</artifactId>
                 <inherited>false</inherited>
-                <!-- Settings for stubbing new extensions. E.g. to add a new extension to support an imaginary
-                     Camel Foo ABC component, you would run
-
-                       mvn cq:create -N -Dcq.artifactIdBase=foo-abc
-
-                -->
                 <configuration>
                     <templatesUriBase>file:${project.basedir}/tooling/create-extension-templates</templatesUriBase>
                     <extensionDirs>
@@ -773,9 +764,6 @@
                 <executions>
                     <execution>
                         <id>enforce-maven-version</id>
-                        <!-- enforce-maven-version is defined in org.apache:apache -->
-                        <!-- we skip for the whole Camel Quarkus tree because we have -->
-                        <!-- an analogous check in camel-quarkus-enforcer-rules -->
                         <phase>none</phase>
                     </execution>
                 </executions>
@@ -787,7 +775,7 @@
                 <executions>
                     <execution>
                         <id>default-test</id>
-                        <phase /><!-- unbound here to speedup -Dquickly build; bound to a phase in camel-quarkus-build-parent-it -->
+                        <phase />
                     </execution>
                 </executions>
             </plugin>
@@ -798,7 +786,21 @@
                 <executions>
                     <execution>
                         <id>attach-descriptor</id>
-                        <phase /><!-- skip to save time -->
+                        <phase />
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.l2x6.cq</groupId>
+                <artifactId>cq-prod-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-excludes</id>
+                        <phase>validate</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>prod-excludes-check</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -823,7 +825,6 @@
 
     <profiles>
         <profile>
-            <!-- Pass '-Dquickly' to skip enforcer and some further sanity checks -->
             <id>full</id>
             <activation>
                 <property>
@@ -1151,7 +1152,7 @@
                         <executions>
                             <execution>
                                 <id>camel-quarkus-enforcer-rules</id>
-                                <phase /><!-- Speedup the check-format profile by skipping the enforcer  -->
+                                <phase />
                             </execution>
                         </executions>
                     </plugin>
@@ -1187,7 +1188,7 @@
                         <executions>
                             <execution>
                                 <id>source-release-assembly</id>
-                                <phase /><!-- fix https://github.com/apache/camel-quarkus/issues/844 -->
+                                <phase />
                             </execution>
                             <execution>
                                 <id>camel-quarkus-source-release-assembly</id>
@@ -1205,8 +1206,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!-- We want to deploy the artifact to a staging location for perusal -->
                     <plugin>
                         <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -1242,7 +1241,6 @@
                             <detectOfflineLinks>false</detectOfflineLinks>
                         </configuration>
                     </plugin>
-                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -1375,7 +1373,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>doclint-java8-disable</id>
             <activation>
@@ -1385,7 +1382,6 @@
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>
         </profile>
-
         <profile>
             <id>docker</id>
             <activation>
@@ -1398,7 +1394,6 @@
                 <quarkus.native.container-runtime>docker</quarkus.native.container-runtime>
             </properties>
         </profile>
-
         <profile>
             <id>apache-snapshots</id>
             <activation>
@@ -1430,7 +1425,6 @@
                 </pluginRepository>
             </pluginRepositories>
         </profile>
-
         <profile>
             <id>oss-snapshots</id>
             <activation>
@@ -1461,7 +1455,6 @@
                 </pluginRepository>
             </pluginRepositories>
         </profile>
-
         <profile>
             <id>build-notification</id>
             <build>
@@ -1495,7 +1488,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>sbom</id>
             <build>
@@ -1521,10 +1513,7 @@
             </plugins>
             </build>
         </profile>
-
         <profile>
-            <!-- Analyze possible dependency conflicts between primary depedency projects, such as Camel and Quarkus -->
-            <!-- Invoke through ./mvnw -Pda -N -->
             <id>da</id>
             <build>
                 <defaultGoal>initialize</defaultGoal>
