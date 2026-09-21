@@ -20,6 +20,7 @@ package org.apache.camel.quarkus.test.support.azure;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import com.github.dockerjava.api.model.ExposedPort;
@@ -43,6 +44,8 @@ public class AzureStorageTestResource implements QuarkusTestResourceLifecycleMan
     private static final String EVENTHUBS_EMULATOR_IMAGE = ConfigProvider.getConfig()
             .getValue("eventhubs-emulator.container.image", String.class);
     private static final int EVENTHUBS_EMULATOR_PORT = 5672;
+    private static final String CONTAINER_NAME = "camel-quarkus-" + UUID.randomUUID();
+    private static final AtomicInteger STARTS = new AtomicInteger();
     private Map<String, String> initArgs = new LinkedHashMap<>();
     private GenericContainer<?> container;
     private GenericContainer<?> eventHubsEmulatorContainer;
@@ -95,7 +98,7 @@ public class AzureStorageTestResource implements QuarkusTestResourceLifecycleMan
         final boolean realCredentialsProvided = realAzureStorageAccountName != null
                 && System.getenv("AZURE_STORAGE_ACCOUNT_KEY") != null;
 
-        final String azureBlobContainername = "camel-quarkus-" + UUID.randomUUID();
+        LOGGER.info("start() invocation #{} using container {}", STARTS.incrementAndGet(), CONTAINER_NAME);
 
         final String azureStorageAccountName = config
                 .getValue("azure.storage.account-name", String.class);
@@ -112,7 +115,7 @@ public class AzureStorageTestResource implements QuarkusTestResourceLifecycleMan
                         .waitingFor(Wait.forListeningPort());
                 container.start();
 
-                result.put("azure.blob.container.name", azureBlobContainername);
+                result.put("azure.blob.container.name", CONTAINER_NAME);
                 Stream.of(AzuriteService.values())
                         .forEach(s -> {
                             result.put(
@@ -125,7 +128,7 @@ public class AzureStorageTestResource implements QuarkusTestResourceLifecycleMan
 
                 String eventHubs = initArgs.get("eventHubs");
                 if (eventHubs != null && eventHubs.equals("true")) {
-                    result.put("azure.event.hubs.blob.container.name", azureBlobContainername);
+                    result.put("azure.event.hubs.blob.container.name", CONTAINER_NAME);
 
                     eventHubsEmulatorContainer = new GenericContainer<>(
                             EVENTHUBS_EMULATOR_IMAGE)
@@ -162,7 +165,7 @@ public class AzureStorageTestResource implements QuarkusTestResourceLifecycleMan
                         "Set AZURE_STORAGE_ACCOUNT_NAME and AZURE_STORAGE_ACCOUNT_KEY env vars if you set CAMEL_QUARKUS_START_MOCK_BACKEND=false");
             }
             MockBackendUtils.logRealBackendUsed();
-            result.put("azure.blob.container.name", azureBlobContainername);
+            result.put("azure.blob.container.name", CONTAINER_NAME);
             Stream.of(AzuriteService.values())
                     .forEach(s -> {
                         result.put(
